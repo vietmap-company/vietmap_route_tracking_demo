@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VietMap Route Tracking Demo</title>
+
+    <!-- VietMap GL JS -->
+    <script src="https://unpkg.com/@vietmap/vietmap-gl-js@6.0.1/dist/vietmap-gl.js"></script>
+    <link href="https://unpkg.com/@vietmap/vietmap-gl-js@6.0.1/dist/vietmap-gl.css" rel="stylesheet" />
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Context Menu -->
+        <div id="context-menu" class="context-menu" style="display: none;">
+            <div class="context-menu-item" data-action="set-start">
+                <span class="menu-icon start-icon"></span>
+                Set as Start Point
+            </div>
+            <div class="context-menu-item" data-action="set-end">
+                <span class="menu-icon end-icon"></span>
+                Set as End Point
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="header">
+            <h1>VietMap Route Tracking Demo</h1>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Map Container -->
+            <div id="map"></div>
+
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <!-- Route Info -->
+                <div class="panel-section">
+                    <h3>Route Information</h3>
+                    <div id="route-info">
+                        <p><strong>Distance:</strong> <span id="distance">--</span></p>
+                        <p><strong>Duration:</strong> <span id="duration">--</span></p>
+                        <p><strong>Status:</strong> <span id="status">Not started</span></p>
+                    </div>
+                </div>
+
+                <!-- Location Controls -->
+                <div class="panel-section">
+                    <h3>Start - End Points</h3>
+                    <div class="input-group">
+                        <label for="start-point">Start point (lat, lng):</label>
+                        <input type="text" id="start-point" placeholder="10.759333, 106.675913" />
+                    </div>
+                    <div class="input-group">
+                        <label for="end-point">End point (lat, lng):</label>
+                        <input type="text" id="end-point" placeholder="10.801180, 106.653297" />
+                    </div>
+                    <div class="input-group">
+                        <label for="vehicle-type">Vehicle type:</label>
+                        <select id="vehicle-type">
+                            <option value="motorcycle" selected>Motorcycle</option>
+                            <option value="car">Car</option>
+                            <option value="bike">Bike (Bicycle)</option>
+                            <option value="foot">Foot (Walking)</option>
+                        </select>
+                    </div>
+                    <button id="btn-find-route" class="btn btn-primary">Find Route</button>
+                    <button id="btn-use-current" class="btn btn-secondary">Use Current Location</button>
+                </div>
+
+                <!-- Simulation Controls -->
+                <div class="panel-section">
+                    <h3>Movement Simulation</h3>
+                    <div class="simulation-controls">
+                        <button id="btn-start-simulation" class="btn btn-success" disabled>Start Movement</button>
+                        <button id="btn-stop-simulation" class="btn btn-danger" disabled>Stop</button>
+                    </div>
+                    <div class="input-group">
+                        <label for="simulation-speed">Simulation Speed:</label>
+                        <input type="range" id="simulation-speed" min="1" max="10" value="5" />
+                        <span id="speed-value">5x</span>
+                    </div>
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" id="simulate-deviation" />
+                            Simulate route deviation (30m)
+                        </label>
+                    </div>
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" id="remove-passed-route" checked />
+                            Remove passed route segments
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Status Log -->
+                <div class="panel-section">
+                    <h3>Activity Log</h3>
+                    <div id="log-container">
+                        <div id="log"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/routing.js"></script>
+    <script src="js/mock-location.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

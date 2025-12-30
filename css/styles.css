@@ -1,0 +1,452 @@
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* Header */
+.header {
+    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+    color: white;
+    padding: 15px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Map Container */
+#map {
+    flex: 1;
+    min-height: 400px;
+}
+
+/* Control Panel */
+.control-panel {
+    width: 350px;
+    background: white;
+    padding: 20px;
+    overflow-y: auto;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.panel-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.panel-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.panel-section h3 {
+    font-size: 1rem;
+    color: #1a73e8;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* Route Info */
+#route-info p {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+#route-info span {
+    color: #666;
+}
+
+#status {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+}
+
+#status.active {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+#status.rerouting {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+#status.completed {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+/* Input Groups */
+.input-group {
+    margin-bottom: 12px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.input-group input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group input[type="text"]:focus {
+    outline: none;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+}
+
+.input-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group select:focus {
+    outline: none;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+}
+
+.input-group input[type="range"] {
+    width: calc(100% - 40px);
+    vertical-align: middle;
+}
+
+.input-group input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+#speed-value {
+    display: inline-block;
+    width: 30px;
+    text-align: right;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 10px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background: #1a73e8;
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: #1557b0;
+}
+
+.btn-secondary {
+    background: #f1f3f4;
+    color: #333;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background: #e8eaed;
+}
+
+.btn-success {
+    background: #34a853;
+    color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    background: #2d8a47;
+}
+
+.btn-danger {
+    background: #ea4335;
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: #c5372b;
+}
+
+/* Simulation Controls */
+.simulation-controls {
+    margin-bottom: 15px;
+}
+
+/* Log Container */
+#log-container {
+    max-height: 200px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 10px;
+}
+
+#log {
+    font-size: 0.8rem;
+    font-family: 'Monaco', 'Menlo', monospace;
+}
+
+.log-entry {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.log-entry:last-child {
+    border-bottom: none;
+}
+
+.log-entry .time {
+    color: #999;
+    margin-right: 8px;
+}
+
+.log-entry.info {
+    color: #1a73e8;
+}
+
+.log-entry.success {
+    color: #34a853;
+}
+
+.log-entry.warning {
+    color: #fbbc04;
+}
+
+.log-entry.error {
+    color: #ea4335;
+}
+
+/* Map Markers */
+.user-marker {
+    width: 48px;
+    height: 48px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='helmet' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23444'/%3E%3Cstop offset='100%25' stop-color='%23222'/%3E%3C/linearGradient%3E%3C/defs%3E%3C!-- Shadow --%3E%3Cellipse cx='50' cy='52' rx='18' ry='28' fill='rgba(0,0,0,0.2)'/%3E%3C!-- Back wheel --%3E%3Cellipse cx='50' cy='78' rx='12' ry='6' fill='%23333'/%3E%3Cellipse cx='50' cy='78' rx='8' ry='4' fill='%23555'/%3E%3C!-- Motorcycle body --%3E%3Cpath d='M35 70 L35 40 Q35 30 50 28 Q65 30 65 40 L65 70 Q65 75 50 76 Q35 75 35 70Z' fill='%231a73e8'/%3E%3Cpath d='M38 68 L38 42 Q38 34 50 32 Q62 34 62 42 L62 68 Q62 72 50 73 Q38 72 38 68Z' fill='%230d5bba'/%3E%3C!-- Rider body --%3E%3Cellipse cx='50' cy='45' rx='10' ry='14' fill='%231565c0'/%3E%3C!-- Arms on handlebar --%3E%3Cpath d='M40 38 L32 42 L32 44 L40 40Z' fill='%231565c0'/%3E%3Cpath d='M60 38 L68 42 L68 44 L60 40Z' fill='%231565c0'/%3E%3C!-- Handlebar --%3E%3Crect x='28' y='40' width='44' height='4' rx='2' fill='%23666'/%3E%3Ccircle cx='28' cy='42' r='3' fill='%23444'/%3E%3Ccircle cx='72' cy='42' r='3' fill='%23444'/%3E%3C!-- Rider head with helmet --%3E%3Ccircle cx='50' cy='26' r='12' fill='url(%23helmet)'/%3E%3Cellipse cx='50' cy='24' rx='10' ry='8' fill='%23333'/%3E%3Crect x='44' y='26' width='12' height='4' rx='1' fill='%2300bcd4'/%3E%3C!-- Front wheel --%3E%3Cellipse cx='50' cy='18' rx='8' ry='4' fill='%23333'/%3E%3Cellipse cx='50' cy='18' rx='5' ry='2.5' fill='%23555'/%3E%3C!-- Headlight --%3E%3Crect x='46' y='28' width='8' height='3' rx='1' fill='%23ffeb3b'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
+    cursor: pointer;
+    pointer-events: auto !important;
+}
+
+.user-marker:hover {
+    transform: scale(1.1);
+    transition: transform 0.2s ease;
+}
+
+.user-marker.deviated {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='helmet2' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23444'/%3E%3Cstop offset='100%25' stop-color='%23222'/%3E%3C/linearGradient%3E%3C/defs%3E%3C!-- Shadow --%3E%3Cellipse cx='50' cy='52' rx='18' ry='28' fill='rgba(0,0,0,0.2)'/%3E%3C!-- Back wheel --%3E%3Cellipse cx='50' cy='78' rx='12' ry='6' fill='%23333'/%3E%3Cellipse cx='50' cy='78' rx='8' ry='4' fill='%23555'/%3E%3C!-- Motorcycle body --%3E%3Cpath d='M35 70 L35 40 Q35 30 50 28 Q65 30 65 40 L65 70 Q65 75 50 76 Q35 75 35 70Z' fill='%23ea4335'/%3E%3Cpath d='M38 68 L38 42 Q38 34 50 32 Q62 34 62 42 L62 68 Q62 72 50 73 Q38 72 38 68Z' fill='%23c5372b'/%3E%3C!-- Rider body --%3E%3Cellipse cx='50' cy='45' rx='10' ry='14' fill='%23b71c1c'/%3E%3C!-- Arms on handlebar --%3E%3Cpath d='M40 38 L32 42 L32 44 L40 40Z' fill='%23b71c1c'/%3E%3Cpath d='M60 38 L68 42 L68 44 L60 40Z' fill='%23b71c1c'/%3E%3C!-- Handlebar --%3E%3Crect x='28' y='40' width='44' height='4' rx='2' fill='%23666'/%3E%3Ccircle cx='28' cy='42' r='3' fill='%23444'/%3E%3Ccircle cx='72' cy='42' r='3' fill='%23444'/%3E%3C!-- Rider head with helmet --%3E%3Ccircle cx='50' cy='26' r='12' fill='url(%23helmet2)'/%3E%3Cellipse cx='50' cy='24' rx='10' ry='8' fill='%23333'/%3E%3Crect x='44' y='26' width='12' height='4' rx='1' fill='%2300bcd4'/%3E%3C!-- Front wheel --%3E%3Cellipse cx='50' cy='18' rx='8' ry='4' fill='%23333'/%3E%3Cellipse cx='50' cy='18' rx='5' ry='2.5' fill='%23555'/%3E%3C!-- Headlight --%3E%3Crect x='46' y='28' width='8' height='3' rx='1' fill='%23ffeb3b'/%3E%3C/svg%3E");
+}
+
+.start-marker {
+    width: 20px;
+    height: 20px;
+    background: #34a853;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.end-marker {
+    width: 20px;
+    height: 20px;
+    background: #ea4335;
+    border: 2px solid white;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Popup Styles */
+.vietmapgl-popup-content {
+    padding: 0;
+    font-size: 0.9rem;
+    min-width: 200px;
+}
+
+/* Vehicle Popup */
+.vehicle-popup {
+    padding: 0;
+}
+
+.vehicle-popup .popup-header {
+    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+    color: white;
+    padding: 10px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 4px 4px 0 0;
+}
+
+.vehicle-popup .popup-header strong {
+    font-size: 1rem;
+    letter-spacing: 1px;
+}
+
+.vehicle-popup .popup-status {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+.vehicle-popup .popup-body {
+    padding: 10px 12px;
+}
+
+.vehicle-popup .popup-body p {
+    margin: 6px 0;
+    display: flex;
+    align-items: center;
+    color: #333;
+    font-size: 0.85rem;
+}
+
+.vehicle-popup .popup-body p i {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    display: inline-block;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
+}
+
+.vehicle-popup .icon-driver {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");
+}
+
+.vehicle-popup .icon-phone {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2334a853'%3E%3Cpath d='M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z'/%3E%3C/svg%3E");
+}
+
+.vehicle-popup .icon-vehicle {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z'/%3E%3C/svg%3E");
+}
+
+/* Context Menu */
+.context-menu {
+    position: fixed;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    z-index: 1000;
+    overflow: hidden;
+    animation: contextMenuFadeIn 0.15s ease-out;
+}
+
+@keyframes contextMenuFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.context-menu-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #333;
+    transition: background 0.15s;
+}
+
+.context-menu-item:hover {
+    background: #f5f5f5;
+}
+
+.context-menu-item:first-child {
+    border-bottom: 1px solid #eee;
+}
+
+.menu-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+.menu-icon.start-icon {
+    background: #34a853;
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #34a853;
+}
+
+.menu-icon.end-icon {
+    background: #ea4335;
+    box-shadow: 0 0 0 2px white, 0 0 0 3px #ea4335;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-content {
+        flex-direction: column;
+    }
+
+    .control-panel {
+        width: 100%;
+        max-height: 300px;
+    }
+
+    #map {
+        min-height: 300px;
+    }
+}
