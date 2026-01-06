@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VietMap Cluster Demo</title>
+
+    <!-- VietMap GL JS -->
+    <script src="https://unpkg.com/@vietmap/vietmap-gl-js@6.0.1/dist/vietmap-gl.js"></script>
+    <link href="https://unpkg.com/@vietmap/vietmap-gl-js@6.0.1/dist/vietmap-gl.css" rel="stylesheet" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        #app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        #map {
+            flex: 1;
+            min-height: 400px;
+        }
+
+        .control-panel {
+            width: 300px;
+            background: white;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .panel-section:last-child {
+            border-bottom: none;
+        }
+
+        .panel-section h3 {
+            font-size: 1rem;
+            color: #1a73e8;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .info-item span:first-child {
+            color: #666;
+        }
+
+        .info-item span:last-child {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1557b0;
+        }
+
+        .btn-secondary {
+            background: #f1f3f4;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e8eaed;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #1a73e8;
+        }
+
+        /* Cluster styles */
+        .cluster-marker {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .cluster-marker:hover {
+            transform: scale(1.1);
+        }
+
+        .cluster-small {
+            width: 40px;
+            height: 40px;
+            background: #51bbd6;
+            font-size: 14px;
+        }
+
+        .cluster-medium {
+            width: 50px;
+            height: 50px;
+            background: #f1f075;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .cluster-large {
+            width: 60px;
+            height: 60px;
+            background: #f28cb1;
+            font-size: 18px;
+        }
+
+        /* Custom marker */
+        .custom-marker {
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .custom-marker:hover {
+            transform: scale(1.2);
+        }
+
+        .custom-marker img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Popup */
+        .marker-popup {
+            padding: 10px;
+        }
+
+        .marker-popup h4 {
+            margin: 0 0 8px 0;
+            color: #1a73e8;
+        }
+
+        .marker-popup p {
+            margin: 4px 0;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .control-panel {
+                width: 100%;
+                max-height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <h1>VietMap Cluster Demo</h1>
+        </header>
+
+        <main class="main-content">
+            <div id="map"></div>
+
+            <div class="control-panel">
+                <div class="panel-section">
+                    <h3>Cluster Information</h3>
+                    <div class="info-item">
+                        <span>Total Points:</span>
+                        <span id="total-points">0</span>
+                    </div>
+                    <div class="info-item">
+                        <span>Visible Clusters:</span>
+                        <span id="cluster-count">0</span>
+                    </div>
+                    <div class="info-item">
+                        <span>Zoom Level:</span>
+                        <span id="zoom-level">13</span>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Generate Points</h3>
+                    <div class="input-group">
+                        <label for="point-count">Number of Points:</label>
+                        <input type="number" id="point-count" value="100" min="10" max="1000" />
+                    </div>
+                    <button class="btn btn-primary" id="btn-generate">Generate Random Points</button>
+                    <button class="btn btn-secondary" id="btn-clear">Clear All Points</button>
+                </div>
+
+                <div class="panel-section">
+                    <h3>Instructions</h3>
+                    <p style="font-size: 0.85rem; color: #666; line-height: 1.5;">
+                        - Click on a cluster to zoom in<br>
+                        - Click on a marker to see details<br>
+                        - Use mouse wheel to zoom<br>
+                        - Drag to pan the map
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Initialize map
+        var map = new vietmapgl.Map({
+            container: 'map',
+            style: Config.getStyleUrl(),
+            center: Config.MAP.DEFAULT_CENTER,
+            zoom: Config.MAP.DEFAULT_ZOOM
+        });
+
+        var markers = [];
+        var geojsonData = {
+            type: 'FeatureCollection',
+            features: []
+        };
+
+        // Generate random points around Ho Chi Minh City
+        function generateRandomPoints(count) {
+            var centerLng = Config.MAP.DEFAULT_CENTER[0];
+            var centerLat = Config.MAP.DEFAULT_CENTER[1];
+            var radius = 0.05; // Approximately 5km
+
+            var features = [];
+            for (var i = 0; i < count; i++) {
+                var lng = centerLng + (Math.random() - 0.5) * radius * 2;
+                var lat = centerLat + (Math.random() - 0.5) * radius * 2;
+
+                features.push({
+                    type: 'Feature',
+                    properties: {
+                        id: i + 1,
+                        name: 'Location ' + (i + 1),
+                        address: 'Address ' + (i + 1) + ', Ho Chi Minh City',
+                        category: ['Restaurant', 'Shop', 'Office', 'Hotel', 'ATM'][Math.floor(Math.random() * 5)]
+                    },
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [lng, lat]
+                    }
+                });
+            }
+
+            return {
+                type: 'FeatureCollection',
+                features: features
+            };
+        }
+
+        // Update cluster info display
+        function updateClusterInfo() {
+            document.getElementById('zoom-level').textContent = map.getZoom().toFixed(1);
+
+            var source = map.getSource('points');
+            if (source) {
+                document.getElementById('total-points').textContent = geojsonData.features.length;
+            }
+        }
+
+        // Clear all markers
+        function clearMarkers() {
+            markers.forEach(function(marker) {
+                marker.remove();
+            });
+            markers = [];
+        }
+
+        // Setup clustering
+        map.on('load', async function() {
+            // Add cluster source first
+            map.addSource('points', {
+                type: 'geojson',
+                data: geojsonData,
+                cluster: true,
+                clusterMaxZoom: 14, 
+                clusterRadius: 50
+            });
+
+            // Cluster circles layer
+            map.addLayer({
+                id: 'clusters',
+                type: 'circle',
+                source: 'points',
+                filter: ['has', 'point_count'],
+                paint: {
+                    'circle-color': [
+                        'step',
+                        ['get', 'point_count'],
+                        '#51bbd6',   // Blue for < 10
+                        10,
+                        '#f1f075',   // Yellow for 10-29
+                        30,
+                        '#f28cb1'    // Pink for >= 30
+                    ],
+                    'circle-radius': [
+                        'step',
+                        ['get', 'point_count'],
+                        20,          // 20px for < 10
+                        10,
+                        25,          // 25px for 10-29
+                        30,
+                        30           // 30px for >= 30
+                    ],
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': '#fff'
+                }
+            });
+
+            // Cluster count label
+            map.addLayer({
+                id: 'cluster-count',
+                type: 'symbol',
+                source: 'points',
+                filter: ['has', 'point_count'],
+                layout: {
+                    'text-field': '{point_count_abbreviated}',
+                    'text-size': 14
+                },
+                paint: {
+                    'text-color': '#333'
+                }
+            });
+            const clusterImage = await map.loadImage('assets/marker.png');
+            // VietMap GL returns {width,height,data}, feed the actual image payload to addImage
+            const markerImage = clusterImage.data || clusterImage;
+            await map.addImage('custom-marker', markerImage);
+                // Unclustered point layer with custom marker
+            map.addLayer({
+                id: 'unclustered-point',
+                type: 'symbol',
+                source: 'points',
+                filter: ['!', ['has', 'point_count']],
+                layout: {
+                    'icon-image': 'custom-marker',
+                    'icon-size': 0.65,
+                    'icon-anchor': 'bottom',
+                    'icon-offset': [0, -8],
+                }
+            });
+
+            // Generate initial points after layers are ready
+            geojsonData = generateRandomPoints(100);
+            map.getSource('points').setData(geojsonData);
+            updateClusterInfo();
+        });
+
+        // Click on cluster to zoom in
+        map.on('click', 'clusters', async (e) => {
+            const features = map.queryRenderedFeatures(e.point, {
+                layers: ['clusters']
+            });
+            const clusterId = features[0].properties.cluster_id;
+            const zoom = await map.getSource('points').getClusterExpansionZoom(clusterId);
+            map.easeTo({
+                center: features[0].geometry.coordinates,
+                zoom
+            });
+        });
+
+        // Click on unclustered point to show popup
+        map.on('click', 'unclustered-point', function(e) {
+            var coordinates = e.features[0].geometry.coordinates.slice();
+            var props = e.features[0].properties;
+
+            // Ensure popup appears at correct location
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            new vietmapgl.Popup()
+                .setLngLat(coordinates)
+                .setHTML(
+                    '<div class="marker-popup">' +
+                    '<h4>' + props.name + '</h4>' +
+                    '<p><strong>Category:</strong> ' + props.category + '</p>' +
+                    '<p><strong>Address:</strong> ' + props.address + '</p>' +
+                    '<p><strong>Coordinates:</strong><br>' +
+                    coordinates[1].toFixed(6) + ', ' + coordinates[0].toFixed(6) + '</p>' +
+                    '</div>'
+                )
+                .addTo(map);
+        });
+
+        // Change cursor on hover
+        map.on('mouseenter', 'clusters', function() {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+
+        map.on('mouseleave', 'clusters', function() {
+            map.getCanvas().style.cursor = '';
+        });
+
+        map.on('mouseenter', 'unclustered-point', function() {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+
+        map.on('mouseleave', 'unclustered-point', function() {
+            map.getCanvas().style.cursor = '';
+        });
+
+        // Update info on zoom
+        map.on('zoom', updateClusterInfo);
+
+        // Generate points button
+        document.getElementById('btn-generate').addEventListener('click', function() {
+            var count = parseInt(document.getElementById('point-count').value) || 100;
+            count = Math.max(10, Math.min(1000, count));
+
+            geojsonData = generateRandomPoints(count);
+
+            var source = map.getSource('points');
+            if (source) {
+                source.setData(geojsonData);
+            }
+
+            updateClusterInfo();
+        });
+
+        // Clear points button
+        document.getElementById('btn-clear').addEventListener('click', function() {
+            geojsonData = {
+                type: 'FeatureCollection',
+                features: []
+            };
+
+            var source = map.getSource('points');
+            if (source) {
+                source.setData(geojsonData);
+            }
+
+            updateClusterInfo();
+        });
+    </script>
+</body>
+</html>
