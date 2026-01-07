@@ -303,14 +303,14 @@
             for (var i = 0; i < count; i++) {
                 var lng = centerLng + (Math.random() - 0.5) * radius * 2;
                 var lat = centerLat + (Math.random() - 0.5) * radius * 2;
-
+                // Data attributes
                 features.push({
                     type: 'Feature',
                     properties: {
                         id: i + 1,
-                        name: 'Location ' + (i + 1),
-                        address: 'Address ' + (i + 1) + ', Ho Chi Minh City',
-                        category: ['Restaurant', 'Shop', 'Office', 'Hotel', 'ATM'][Math.floor(Math.random() * 5)]
+                        name: 'Marker số: ' + (i + 1),
+                        address: 'Địa chỉ ' + (i + 1) + ', Thành phố Hồ Chí Minh',
+                        category: ['Nhà hàng', 'Cửa hàng', 'Văn phòng', 'Khách sạn', 'ATM'][Math.floor(Math.random() * 5)]
                     },
                     geometry: {
                         type: 'Point',
@@ -402,7 +402,7 @@
             // VietMap GL returns {width,height,data}, feed the actual image payload to addImage
             const markerImage = clusterImage.data || clusterImage;
             await map.addImage('custom-marker', markerImage);
-                // Unclustered point layer with custom marker
+                // Unclustered point layer with custom marker and text label
             map.addLayer({
                 id: 'unclustered-point',
                 type: 'symbol',
@@ -413,6 +413,18 @@
                     'icon-size': 0.65,
                     'icon-anchor': 'bottom',
                     'icon-offset': [0, -8],
+                    // Text label, from 'name' property in properties object
+                    'text-field': ['get', 'name'],
+                    'text-size': 12,
+                    'text-anchor': 'bottom',
+                    // Position text slightly above the marker
+                    'text-offset': [0, -4.5],
+                    'text-optional': true
+                },
+                paint: {
+                    'text-color': '#333',
+                    'text-halo-color': '#fff',
+                    'text-halo-width': 1.5
                 }
             });
 
