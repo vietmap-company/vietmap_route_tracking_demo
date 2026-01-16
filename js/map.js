@@ -11,8 +11,10 @@ var MapModule = {
         start: null,
         end: null
     },
+    instructionMarkers: [], // Array to store instruction markers
     routeLayerId: 'route-layer',
     routeSourceId: 'route-source',
+    imagesLoaded: false,
 
     // Vehicle/Driver information for popup
     vehicleInfo: {
@@ -21,6 +23,14 @@ var MapModule = {
         driverPhone: '0901234567',
         vehicleType: 'Honda Wave Alpha',
         status: 'Đang giao hàng'
+    },
+
+    // Marker icon file paths (moved to assets)
+    markerSVGs: {
+        userNormal: 'assets/marker-user-normal.svg',
+        userDeviated: 'assets/marker-user-deviated.svg',
+        start: 'assets/marker-start.svg',
+        end: 'assets/marker-end.svg'
     },
 
     /**
@@ -83,7 +93,10 @@ var MapModule = {
                 }
             }, firstSymbolLayer); // Insert before first symbol layer
 
-            if (callback) callback();
+            // Load marker images
+            self.loadMarkerImages(function() {
+                if (callback) callback();
+            });
         });
 
         // Handle map click
@@ -99,12 +112,43 @@ var MapModule = {
     },
 
     /**
-     * Create marker HTML element
+     * Load marker images into map
      */
-    createMarkerElement: function(className) {
-        var el = document.createElement('div');
-        el.className = className;
-        return el;
+    loadMarkerImages: function(callback) {
+        var self = this;
+        var imagesToLoad = [
+            { name: 'user-marker-normal', src: this.markerSVGs.userNormal, width: 48, height: 48 },
+            { name: 'user-marker-deviated', src: this.markerSVGs.userDeviated, width: 48, height: 48 },
+            { name: 'start-marker', src: this.markerSVGs.start, width: 20, height: 20 },
+            { name: 'end-marker', src: this.markerSVGs.end, width: 20, height: 20 }
+        ];
+
+        var loadedCount = 0;
+        var totalImages = imagesToLoad.length;
+
+        imagesToLoad.forEach(function(img) {
+            var svgImage = new Image(img.width, img.height);
+            svgImage.onload = function() {
+                if (!self.map.hasImage(img.name)) {
+                    self.map.addImage(img.name, svgImage);
+                }
+                loadedCount++;
+                if (loadedCount === totalImages) {
+                    self.imagesLoaded = true;
+                    Logger.log('Marker images loaded', 'success');
+                    if (callback) callback();
+                }
+            };
+            svgImage.onerror = function() {
+                Logger.log('Failed to load image: ' + img.name, 'error');
+                loadedCount++;
+                if (loadedCount === totalImages) {
+                    self.imagesLoaded = true;
+                    if (callback) callback();
+                }
+            };
+            svgImage.src = img.src;
+        });
     },
 
     /**
@@ -146,50 +190,91 @@ var MapModule = {
      */
     setUserMarker: function(lat, lng, deviated, heading) {
         var self = this;
+        
+        if (!this.imagesLoaded) {
+            Logger.log('Images not loaded yet', 'warning');
+            return;
+        }
+
+        var iconImage = deviated ? 'user-marker-deviated' : 'user-marker-normal';
 
         if (this.markers.user) {
-            this.markers.user.setLngLat([lng, lat]);
-            var el = this.markers.user.getElement();
-            if (deviated) {
-                el.classList.add('deviated');
-            } else {
-                el.classList.remove('deviated');
+            // Update existing marker - optimize by only updating coordinates
+            var source = this.map.getSource('user-marker-source');
+            if (source) {
+                var data = source._data;
+                data.geometry.coordinates = [lng, lat];
+                source.setData(data);
+
+                // Only update icon if deviated status changed
+                var currentIcon = this.map.getLayoutProperty('user-marker-layer', 'icon-image');
+                if (currentIcon !== iconImage) {
+                    this.map.setLayoutProperty('user-marker-layer', 'icon-image', iconImage);
+                }
+
+                // Update rotation
+                this.map.setLayoutProperty('user-marker-layer', 'icon-rotate', heading || 0);
             }
-            // Apply rotation using marker's setRotation method
-            if (typeof heading === 'number') {
-                this.markers.user.setRotation(heading);
-            }
-            // Update popup content if exists
-            var popup = this.markers.user.getPopup();
-            if (popup) {
-                popup.setHTML(this.getVehiclePopupContent());
+
+            // Update popup position
+            if (this.markers.user.popup) {
+                this.markers.user.popup.setLngLat([lng, lat]);
             }
         } else {
-            var el = this.createMarkerElement('user-marker');
+            // Create new marker
+            this.map.addSource('user-marker-source', {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [lng, lat]
+                    }
+                }
+            });
 
-            // Create popup for vehicle info
+            this.map.addLayer({
+                id: 'user-marker-layer',
+                type: 'symbol',
+                source: 'user-marker-source',
+                layout: {
+                    'icon-image': iconImage,
+                    'icon-size': 1.0,
+                    'icon-rotate': heading || 0,
+                    'icon-rotation-alignment': 'map',
+                    'icon-allow-overlap': true,
+                    'icon-ignore-placement': true,
+                    'icon-anchor': 'center'
+                }
+            });
+
+            // Create popup
             var popup = new vietmapgl.Popup({
                 offset: 25,
                 closeButton: true,
                 closeOnClick: false
-            }).setHTML(this.getVehiclePopupContent());
-
-            this.markers.user = new vietmapgl.Marker({
-                element: el,
-                rotationAlignment: 'map',
-                rotation: heading || 0
-            })
-                .setLngLat([lng, lat])
-                .setPopup(popup)
-                .addTo(this.map);
+            }).setLngLat([lng, lat]).setHTML(this.getVehiclePopupContent());
 
             // Add click event to toggle popup
-            el.style.cursor = 'pointer';
-            el.addEventListener('click', function(e) {
-                e.stopPropagation();
+            this.map.on('click', 'user-marker-layer', function(e) {
                 e.preventDefault();
-                self.markers.user.togglePopup();
+                if (popup.isOpen()) {
+                    popup.remove();
+                } else {
+                    popup.addTo(self.map);
+                }
             });
+
+            // Change cursor on hover
+            this.map.on('mouseenter', 'user-marker-layer', function() {
+                self.map.getCanvas().style.cursor = 'pointer';
+            });
+
+            this.map.on('mouseleave', 'user-marker-layer', function() {
+                self.map.getCanvas().style.cursor = '';
+            });
+
+            this.markers.user = { popup: popup, coords: [lng, lat] };
         }
     },
 
@@ -197,14 +282,45 @@ var MapModule = {
      * Set start point marker
      */
     setStartMarker: function(lat, lng) {
+        if (!this.imagesLoaded) return;
+
         if (this.markers.start) {
-            this.markers.start.setLngLat([lng, lat]);
+            var source = this.map.getSource('start-marker-source');
+            if (source) {
+                source.setData({
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [lng, lat]
+                    }
+                });
+            }
         } else {
-            var el = this.createMarkerElement('start-marker');
-            this.markers.start = new vietmapgl.Marker({ element: el })
-                .setLngLat([lng, lat])
-                .setPopup(new vietmapgl.Popup().setHTML('<strong>Start Point</strong>'))
-                .addTo(this.map);
+            this.map.addSource('start-marker-source', {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [lng, lat]
+                    }
+                }
+            });
+
+            this.map.addLayer({
+                id: 'start-marker-layer',
+                type: 'symbol',
+                source: 'start-marker-source',
+                layout: {
+                    'icon-image': 'start-marker',
+                    'icon-size': 1.0,
+                    'icon-allow-overlap': true,
+                    'icon-ignore-placement': true,
+                    'icon-anchor': 'center'
+                }
+            });
+
+            this.markers.start = true;
         }
     },
 
@@ -212,14 +328,45 @@ var MapModule = {
      * Set end point marker
      */
     setEndMarker: function(lat, lng) {
+        if (!this.imagesLoaded) return;
+
         if (this.markers.end) {
-            this.markers.end.setLngLat([lng, lat]);
+            var source = this.map.getSource('end-marker-source');
+            if (source) {
+                source.setData({
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [lng, lat]
+                    }
+                });
+            }
         } else {
-            var el = this.createMarkerElement('end-marker');
-            this.markers.end = new vietmapgl.Marker({ element: el })
-                .setLngLat([lng, lat])
-                .setPopup(new vietmapgl.Popup().setHTML('<strong>End Point</strong>'))
-                .addTo(this.map);
+            this.map.addSource('end-marker-source', {
+                type: 'geojson',
+                data: {
+                    type: 'Feature',
+                    geometry: {
+                        type: 'Point',
+                        coordinates: [lng, lat]
+                    }
+                }
+            });
+
+            this.map.addLayer({
+                id: 'end-marker-layer',
+                type: 'symbol',
+                source: 'end-marker-source',
+                layout: {
+                    'icon-image': 'end-marker',
+                    'icon-size': 1.0,
+                    'icon-allow-overlap': true,
+                    'icon-ignore-placement': true,
+                    'icon-anchor': 'center'
+                }
+            });
+
+            this.markers.end = true;
         }
     },
 
@@ -244,6 +391,96 @@ var MapModule = {
      */
     clearRoute: function() {
         this.drawRoute([]);
+        this.clearInstructionMarkers();
+    },
+
+    /**
+     * Draw instruction markers based on intervals
+     * @param {Array} instructions - Array of instruction objects with interval property
+     * @param {Array} coordinates - Decoded route coordinates [[lng, lat], ...]
+     */
+    drawInstructionMarkers: function(instructions, coordinates) {
+        var self = this;
+        
+        // Clear existing instruction markers
+        this.clearInstructionMarkers();
+
+        if (!instructions || !coordinates || instructions.length === 0) {
+            return;
+        }
+
+        console.log('Drawing instruction markers:', instructions.length);
+
+        instructions.forEach(function(instruction, index) {
+            // Skip if no interval
+            if (!instruction.interval || instruction.interval.length < 2) {
+                return;
+            }
+
+            var startIndex = instruction.interval[0];
+            var endIndex = instruction.interval[1];
+
+            // Use provided street name when available
+            var streetName = instruction.street_name || instruction.streetName || '';
+
+            // Validate index
+            if (startIndex >= coordinates.length) {
+                console.warn('Start index out of bounds:', startIndex, 'for', coordinates.length, 'coordinates');
+                return;
+            }
+
+            // Get coordinate at start of interval
+            var coord = coordinates[startIndex];
+            
+            // Create marker element
+            var el = document.createElement('div');
+            el.className = 'instruction-marker';
+            el.innerHTML = '<div class="instruction-number">' + (index + 1) + '</div>';
+
+            // Create popup content
+            var popupContent = '<div class="instruction-popup">' +
+                '<div class="instruction-text"><strong>Bước ' + (index + 1) + ':</strong><br>' + 
+                (instruction.text || 'Tiếp tục') + '</div>' +
+                (streetName ? '<div class="instruction-text">Đường: ' + streetName + '</div>' : '') +
+                '<div class="instruction-details">' +
+                    '<span>📏 ' + Utils.formatDistance(instruction.distance) + '</span> ' +
+                    '<span>⏱️ ' + Utils.formatDuration(instruction.time) + '</span>' +
+                '</div>' +
+            '</div>';
+
+            // Create marker
+            var marker = new vietmapgl.Marker({ 
+                element: el,
+                anchor: 'bottom'
+            })
+                .setLngLat(coord)
+                .setPopup(new vietmapgl.Popup({ 
+                    offset: 25,
+                    closeButton: true
+                }).setHTML(popupContent))
+                .addTo(self.map);
+
+            // Add click handler to show popup
+            el.style.cursor = 'pointer';
+            el.addEventListener('click', function(e) {
+                e.stopPropagation();
+                marker.togglePopup();
+            });
+
+            self.instructionMarkers.push(marker);
+        });
+
+        console.log('Created', self.instructionMarkers.length, 'instruction markers');
+    },
+
+    /**
+     * Clear all instruction markers
+     */
+    clearInstructionMarkers: function() {
+        this.instructionMarkers.forEach(function(marker) {
+            marker.remove();
+        });
+        this.instructionMarkers = [];
     },
 
     /**
@@ -278,16 +515,25 @@ var MapModule = {
      * Remove all markers
      */
     clearMarkers: function() {
+        // Remove user marker
         if (this.markers.user) {
-            this.markers.user.remove();
+            if (this.markers.user.popup) this.markers.user.popup.remove();
+            if (this.map.getLayer('user-marker-layer')) this.map.removeLayer('user-marker-layer');
+            if (this.map.getSource('user-marker-source')) this.map.removeSource('user-marker-source');
             this.markers.user = null;
         }
+
+        // Remove start marker
         if (this.markers.start) {
-            this.markers.start.remove();
+            if (this.map.getLayer('start-marker-layer')) this.map.removeLayer('start-marker-layer');
+            if (this.map.getSource('start-marker-source')) this.map.removeSource('start-marker-source');
             this.markers.start = null;
         }
+
+        // Remove end marker
         if (this.markers.end) {
-            this.markers.end.remove();
+            if (this.map.getLayer('end-marker-layer')) this.map.removeLayer('end-marker-layer');
+            if (this.map.getSource('end-marker-source')) this.map.removeSource('end-marker-source');
             this.markers.end = null;
         }
     }

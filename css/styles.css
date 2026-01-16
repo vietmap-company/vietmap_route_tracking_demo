@@ -271,7 +271,7 @@ body {
 .user-marker {
     width: 48px;
     height: 48px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='helmet' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23444'/%3E%3Cstop offset='100%25' stop-color='%23222'/%3E%3C/linearGradient%3E%3C/defs%3E%3C!-- Shadow --%3E%3Cellipse cx='50' cy='52' rx='18' ry='28' fill='rgba(0,0,0,0.2)'/%3E%3C!-- Back wheel --%3E%3Cellipse cx='50' cy='78' rx='12' ry='6' fill='%23333'/%3E%3Cellipse cx='50' cy='78' rx='8' ry='4' fill='%23555'/%3E%3C!-- Motorcycle body --%3E%3Cpath d='M35 70 L35 40 Q35 30 50 28 Q65 30 65 40 L65 70 Q65 75 50 76 Q35 75 35 70Z' fill='%231a73e8'/%3E%3Cpath d='M38 68 L38 42 Q38 34 50 32 Q62 34 62 42 L62 68 Q62 72 50 73 Q38 72 38 68Z' fill='%230d5bba'/%3E%3C!-- Rider body --%3E%3Cellipse cx='50' cy='45' rx='10' ry='14' fill='%231565c0'/%3E%3C!-- Arms on handlebar --%3E%3Cpath d='M40 38 L32 42 L32 44 L40 40Z' fill='%231565c0'/%3E%3Cpath d='M60 38 L68 42 L68 44 L60 40Z' fill='%231565c0'/%3E%3C!-- Handlebar --%3E%3Crect x='28' y='40' width='44' height='4' rx='2' fill='%23666'/%3E%3Ccircle cx='28' cy='42' r='3' fill='%23444'/%3E%3Ccircle cx='72' cy='42' r='3' fill='%23444'/%3E%3C!-- Rider head with helmet --%3E%3Ccircle cx='50' cy='26' r='12' fill='url(%23helmet)'/%3E%3Cellipse cx='50' cy='24' rx='10' ry='8' fill='%23333'/%3E%3Crect x='44' y='26' width='12' height='4' rx='1' fill='%2300bcd4'/%3E%3C!-- Front wheel --%3E%3Cellipse cx='50' cy='18' rx='8' ry='4' fill='%23333'/%3E%3Cellipse cx='50' cy='18' rx='5' ry='2.5' fill='%23555'/%3E%3C!-- Headlight --%3E%3Crect x='46' y='28' width='8' height='3' rx='1' fill='%23ffeb3b'/%3E%3C/svg%3E");
+    background-image: url("../assets/marker-user-normal.svg");
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -286,7 +286,7 @@ body {
 }
 
 .user-marker.deviated {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='helmet2' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23444'/%3E%3Cstop offset='100%25' stop-color='%23222'/%3E%3C/linearGradient%3E%3C/defs%3E%3C!-- Shadow --%3E%3Cellipse cx='50' cy='52' rx='18' ry='28' fill='rgba(0,0,0,0.2)'/%3E%3C!-- Back wheel --%3E%3Cellipse cx='50' cy='78' rx='12' ry='6' fill='%23333'/%3E%3Cellipse cx='50' cy='78' rx='8' ry='4' fill='%23555'/%3E%3C!-- Motorcycle body --%3E%3Cpath d='M35 70 L35 40 Q35 30 50 28 Q65 30 65 40 L65 70 Q65 75 50 76 Q35 75 35 70Z' fill='%23ea4335'/%3E%3Cpath d='M38 68 L38 42 Q38 34 50 32 Q62 34 62 42 L62 68 Q62 72 50 73 Q38 72 38 68Z' fill='%23c5372b'/%3E%3C!-- Rider body --%3E%3Cellipse cx='50' cy='45' rx='10' ry='14' fill='%23b71c1c'/%3E%3C!-- Arms on handlebar --%3E%3Cpath d='M40 38 L32 42 L32 44 L40 40Z' fill='%23b71c1c'/%3E%3Cpath d='M60 38 L68 42 L68 44 L60 40Z' fill='%23b71c1c'/%3E%3C!-- Handlebar --%3E%3Crect x='28' y='40' width='44' height='4' rx='2' fill='%23666'/%3E%3Ccircle cx='28' cy='42' r='3' fill='%23444'/%3E%3Ccircle cx='72' cy='42' r='3' fill='%23444'/%3E%3C!-- Rider head with helmet --%3E%3Ccircle cx='50' cy='26' r='12' fill='url(%23helmet2)'/%3E%3Cellipse cx='50' cy='24' rx='10' ry='8' fill='%23333'/%3E%3Crect x='44' y='26' width='12' height='4' rx='1' fill='%2300bcd4'/%3E%3C!-- Front wheel --%3E%3Cellipse cx='50' cy='18' rx='8' ry='4' fill='%23333'/%3E%3Cellipse cx='50' cy='18' rx='5' ry='2.5' fill='%23555'/%3E%3C!-- Headlight --%3E%3Crect x='46' y='28' width='8' height='3' rx='1' fill='%23ffeb3b'/%3E%3C/svg%3E");
+    background-image: url("../assets/marker-user-deviated.svg");
 }
 
 .start-marker {
@@ -365,15 +365,15 @@ body {
 }
 
 .vehicle-popup .icon-driver {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a73e8'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");
+    background-image: url("../assets/icon-driver.svg");
 }
 
 .vehicle-popup .icon-phone {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2334a853'%3E%3Cpath d='M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z'/%3E%3C/svg%3E");
+    background-image: url("../assets/icon-phone.svg");
 }
 
 .vehicle-popup .icon-vehicle {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23666'%3E%3Cpath d='M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z'/%3E%3C/svg%3E");
+    background-image: url("../assets/icon-vehicle.svg");
 }
 
 /* Context Menu */
@@ -449,4 +449,65 @@ body {
     #map {
         min-height: 300px;
     }
+}
+
+/* Instruction Markers */
+.instruction-marker {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+    border: 3px solid white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.instruction-marker:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.instruction-number {
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Instruction Popup */
+.instruction-popup {
+    padding: 12px;
+    min-width: 220px;
+}
+
+.instruction-text {
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.instruction-text strong {
+    color: #f57c00;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.instruction-details {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    color: #666;
+    padding: 8px 0;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 8px;
+}
+
+.instruction-interval {
+    font-size: 11px;
+    color: #999;
+    font-family: monospace;
 }

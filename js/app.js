@@ -207,6 +207,13 @@ var App = {
 
             // Draw route
             MapModule.drawRoute(data.coordinates);
+            
+            // Draw instruction markers
+            if (data.instructions && data.instructions.length > 0) {
+                MapModule.drawInstructionMarkers(data.instructions, data.coordinates);
+                Logger.log('Drew ' + data.instructions.length + ' instruction markers', 'info');
+            }
+            
             MapModule.fitBounds(data.coordinates);
 
             // Update info
