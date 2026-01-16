@@ -1,0 +1,25 @@
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+    <defs>
+        <linearGradient id='helmet' x1='0%' y1='0%' x2='0%' y2='100%'>
+            <stop offset='0%' stop-color='#444'/>
+            <stop offset='100%' stop-color='#222'/>
+        </linearGradient>
+    </defs>
+    <ellipse cx='50' cy='52' rx='18' ry='28' fill='rgba(0,0,0,0.2)'/>
+    <ellipse cx='50' cy='78' rx='12' ry='6' fill='#333'/>
+    <ellipse cx='50' cy='78' rx='8' ry='4' fill='#555'/>
+    <path d='M35 70 L35 40 Q35 30 50 28 Q65 30 65 40 L65 70 Q65 75 50 76 Q35 75 35 70Z' fill='#1a73e8'/>
+    <path d='M38 68 L38 42 Q38 34 50 32 Q62 34 62 42 L62 68 Q62 72 50 73 Q38 72 38 68Z' fill='#0d5bba'/>
+    <ellipse cx='50' cy='45' rx='10' ry='14' fill='#1565c0'/>
+    <path d='M40 38 L32 42 L32 44 L40 40Z' fill='#1565c0'/>
+    <path d='M60 38 L68 42 L68 44 L60 40Z' fill='#1565c0'/>
+    <rect x='28' y='40' width='44' height='4' rx='2' fill='#666'/>
+    <circle cx='28' cy='42' r='3' fill='#444'/>
+    <circle cx='72' cy='42' r='3' fill='#444'/>
+    <circle cx='50' cy='26' r='12' fill='url(#helmet)'/>
+    <ellipse cx='50' cy='24' rx='10' ry='8' fill='#333'/>
+    <rect x='44' y='26' width='12' height='4' rx='1' fill='#00bcd4'/>
+    <ellipse cx='50' cy='18' rx='8' ry='4' fill='#333'/>
+    <ellipse cx='50' cy='18' rx='5' ry='2.5' fill='#555'/>
+    <rect x='46' y='28' width='8' height='3' rx='1' fill='#ffeb3b'/>
+</svg>
